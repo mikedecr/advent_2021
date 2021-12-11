@@ -1,5 +1,6 @@
 [deps]
 DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
 HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+Pipe = "b98c9c47-44ae-5843-9183-064241ee97a0"
 RollingFunctions = "b0e4dd01-7b14-53d8-9b45-175a3e362653"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
