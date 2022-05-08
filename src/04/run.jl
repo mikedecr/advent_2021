@@ -15,10 +15,10 @@ stream = @pipe raw[1, :] |>
 
 # divide remaining rows into 5 x 5 sub-arrays
 boards = let boards_joined = raw[2:end, :]
-    n_boards = div(size(boards_joined, 1), 5)
+    local n_boards = div(size(boards_joined, 1), 5)
     # solve for the number of times we have to "cut" the joined board
-    board_cut_ixs = repeat([5], n_boards) 
-    return(blk.BlockArray(boards_joined, board_cut_ixs, [5]))
+    local board_cut_ixs = repeat([5], n_boards) 
+    blk.BlockArray(boards_joined, board_cut_ixs, [5])
 end
 
 # get the winning board & score
