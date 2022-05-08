@@ -7,7 +7,7 @@ import BlockArrays as blk
 
 raw = dlm.readdlm("data/04.txt")
 
-# extract stream of draws off the top row of the text file
+# extract stream of pulls off the top row of the text file
 stream = @pipe raw[1, :] |>
     join(_) |>
     split(_, ',') |>
@@ -22,6 +22,6 @@ boards = let boards_joined = raw[2:end, :]
 end
 
 # get the winning board & score
-winner, draws = play_bingo(blk.blocks(boards), stream)
-winning_score(winner, draws)
+winner, pulls = play_bingo(blk.blocks(boards), stream)
+winning_score(winner, pulls)
 

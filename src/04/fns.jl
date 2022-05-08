@@ -1,21 +1,21 @@
 # Functions
 
-function is_axis_bingo(axis, draws)
-    all((value in draws) for value in axis)
+"(bool) tests a single axis for bingo"
+function is_axis_bingo(axis, pulls)
+    all((value in pulls) for value in axis)
 end
 
-
-function check_bingo(card, draws)
+" (bool) applies single-axis function to a all rows/cols on a card"
+function check_bingo(card, pulls)
     # iterate on both rows and columns
     iter_card_axes = Iterators.flatten(((eachrow(card), eachcol(card))))
-    # check axis for each axis
-    bingo_axes = Iterators.map(axis -> is_axis_bingo(axis, draws), iter_card_axes)
-    any(bingo_axes)
+    bingos = Iterators.map(axis -> is_axis_bingo(axis, pulls), iter_card_axes)
+    any(bingos)
 end
 
-# returns winning card if bingo
-function play_bingo_round(cards, draws)
-    bingos = map(card -> check_bingo(card, draws), cards)
+"""returns winning card if bingo"""
+function play_bingo_round(cards, pulls)
+    bingos = map(card -> check_bingo(card, pulls), cards)
     @assert (sum(bingos) in [0, 1]) "No unique winner"
     if any(bingos)
         # why did we have an additional index here?
@@ -23,7 +23,8 @@ function play_bingo_round(cards, draws)
     end
 end
 
-# iterate rounds over a "stream" of draws, return winning card + pulls
+"""iterate rounds over a "stream" of pulls
+   return winning card + pulled values"""
 function play_bingo(cards, stream)
     winner = nothing
     pulls = []
