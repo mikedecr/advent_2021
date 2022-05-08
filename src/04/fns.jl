@@ -36,8 +36,7 @@ function play_bingo(cards, stream)
     return (winner, pulls)
 end
 
-
-# calculate score
+"""calculate score of winning card"""
 function winning_score(card, pulls)
     unmatched = map(n -> n * !(n in pulls), card)
     sum(unmatched) * last(pulls)
