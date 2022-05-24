@@ -1,44 +1,42 @@
-# Functions
+# BINGO FUNCTIONS
 
-"(bool) tests a single axis for bingo"
-function is_axis_bingo(axis, pulls)
-    all((value in pulls) for value in axis)
+"1. True if all axis values are among set of draws"
+function is_axis_bingo(axis, draws)
+    return all((value in draws) for value in axis)
 end
 
-" (bool) applies single-axis function to a all rows/cols on a card"
-function check_bingo(card, pulls)
-    # iterate on both rows and columns
-    iter_card_axes = Iterators.flatten(((eachrow(card), eachcol(card))))
-    bingos = Iterators.map(axis -> is_axis_bingo(axis, pulls), iter_card_axes)
-    any(bingos)
+"2. True if card contains at least one bingo axis"
+function is_card_bingo(card, draws)
+    iter_card_axes = Iterators.flatten([eachrow(card), eachcol(card)])
+    bingos = map(axis -> is_axis_bingo(axis, draws), iter_card_axes)
+    return any(bingos)
 end
 
-"""returns winning card if bingo"""
-function play_bingo_round(cards, pulls)
-    bingos = map(card -> check_bingo(card, pulls), cards)
-    @assert (sum(bingos) in [0, 1]) "No unique winner"
-    if any(bingos)
-        # why did we have an additional index here?
-        return cards[bingos][1]
-    end
+"3. Returns the (first) winning card from a set, else nothing"
+function winning_cards(cards, draws)
+	is_winner = map(card -> is_card_bingo(card, draws), cards)
+    if any(is_winner)
+	    return cards[is_winner]
+	end
 end
 
-"""iterate rounds over a "stream" of pulls
-   return winning card + pulled values"""
-function play_bingo(cards, stream)
-    winner = nothing
-    pulls = []
-    local remaining_pulls = copy(stream)
-    while isnothing(winner)
-        push!(pulls, popfirst!(remaining_pulls))
-        winner = play_bingo_round(cards, pulls)
-    end
-    return (winner, pulls)
+"4. Recursively play bingo until a card wins"
+function play_bingo(cards, queue, draws = [])
+    # pull a new number from the queue
+	# & use it for a bingo round
+    push!(draws, popfirst!(queue))
+    winners = winning_cards(cards, draws)
+	# if no winner yet, function calls itself :)
+    if !isnothing(winners) 
+		return winners, draws
+	else
+		play_bingo(cards, queue, draws)
+	end
 end
 
-"""calculate score of winning card"""
+"calculate winning score according to the problem instructions"
 function winning_score(card, pulls)
     unmatched = map(n -> n * !(n in pulls), card)
-    sum(unmatched) * last(pulls)
+    return sum(unmatched) * last(pulls)
 end
 
